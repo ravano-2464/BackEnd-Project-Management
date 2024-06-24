@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(cuid())
+  name        String
+  email       String       @unique
+  password    String
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  tasks       Task[]       @relation("AssignedTasks")
+  comments    Comment[]
+  roles       UserRole[]
+  TeamMembers TeamMember[]
+
+  @@map("users")
+}
+
+model Team {
+  id         String       @id @default(cuid())
+  name       String
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+  projects   Project[]
+  members    TeamMember[]
+
+  @@map("teams")
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  project_name String
+  description  String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  team_id      String
+  team         Team     @relation(fields: [team_id], references: [id])
+  tasks        Task[]
+
+  @@map("projects")
+}
+
+model Task {
+  id            String    @id @default(cuid())
+  task_name     String
+  description   String?
+  status        String
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  assigned_to   String?
+  assigned_user User?     @relation("AssignedTasks", fields: [assigned_to], references: [id])
+  projectId     String
+  project       Project   @relation(fields: [projectId], references: [id])
+  comments      Comment[]
+
+  @@map("tasks")
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  content    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  task_id    String
+  task       Task     @relation(fields: [task_id], references: [id])
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@map("comments")
+}
+
+model Role {
+  id         String     @id @default(cuid())
+  role_name  String     @unique
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  users      UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  user_id    String
+  role_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  role       Role     @relation(fields: [role_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([user_id, role_id])
+  @@map("user_roles")
+}
+
+model TeamMember {
+  team_id    String
+  user_id    String
+  team       Team     @relation(fields: [team_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([team_id, user_id])
+  @@map("team_members")
+}
