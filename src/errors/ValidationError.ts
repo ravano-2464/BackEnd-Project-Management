@@ -4,7 +4,7 @@ class ValidationError extends CustomError {
   errorCode = 400;
   errorType = "VALIDATION_ERROR";
 
-  constructor(message: string, private fields: string) {
+  constructor(message: string, private fields?: string) {
     super(message);
 
     Object.setPrototypeOf(this, ValidationError.prototype);

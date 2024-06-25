@@ -46,7 +46,7 @@ model Project {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
   team_id      String
-  team         Team     @relation(fields: [team_id], references: [id])
+  team         Team     @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   tasks        Task[]
 
   @@map("projects")
@@ -60,9 +60,9 @@ model Task {
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
   assigned_to   String?
-  assigned_user User?     @relation("AssignedTasks", fields: [assigned_to], references: [id])
+  assigned_user User?     @relation("AssignedTasks", fields: [assigned_to], references: [id], onDelete: SetNull, onUpdate: Cascade)
   projectId     String
-  project       Project   @relation(fields: [projectId], references: [id])
+  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   comments      Comment[]
 
   @@map("tasks")
@@ -74,9 +74,9 @@ model Comment {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   task_id    String
-  task       Task     @relation(fields: [task_id], references: [id])
+  task       Task     @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id    String
-  user       User     @relation(fields: [user_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("comments")
 }
@@ -94,8 +94,8 @@ model Role {
 model UserRole {
   user_id    String
   role_id    String
-  user       User     @relation(fields: [user_id], references: [id])
-  role       Role     @relation(fields: [role_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role       Role     @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -106,8 +106,8 @@ model UserRole {
 model TeamMember {
   team_id    String
   user_id    String
-  team       Team     @relation(fields: [team_id], references: [id])
-  user       User     @relation(fields: [user_id], references: [id])
+  team       Team     @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
