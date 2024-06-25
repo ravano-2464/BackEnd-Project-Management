@@ -21,7 +21,7 @@ export const findAll = async (
   }
 };
 
-export const createUser = async (
+export const create = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -58,7 +58,7 @@ export const findOne = async (
   }
 };
 
-export const updateUser = async (
+export const update = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -82,7 +82,7 @@ export const updateUser = async (
   }
 };
 
-export const deleteUser = async (
+export const remove = async (
   req: Request,
   res: Response,
   next: NextFunction
