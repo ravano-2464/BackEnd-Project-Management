@@ -49,23 +49,54 @@ export const findAll = async () => {
 };
 
 export const create = async (payload: UserCreateDTO) => {
-  const { role_ids, password, ...data } = payload;
-  const hashedPassword = await encryptPass(password);
-  return await prisma.user.create({
-    data: {
-      ...data,
-      password: hashedPassword,
-      roles: {
-        create: role_ids.map((role_id) => ({
-          role: {
-            connect: {
-              id: role_id,
-            },
-          },
-        })),
-      },
+  const isExist = await prisma.user.findUnique({
+    where: {
+      email: payload.email,
     },
   });
+
+  if (isExist) {
+    throw new ValidationError("Email already exist", "email");
+  }
+
+  const { role_ids, password, ...data } = payload;
+  const hashedPassword = await encryptPass(password);
+  return await prisma.user
+    .create({
+      data: {
+        ...data,
+        password: hashedPassword,
+        roles: {
+          create: role_ids.map((role_id) => ({
+            role: {
+              connect: {
+                id: role_id,
+              },
+            },
+          })),
+        },
+      },
+      select: {
+        name: true,
+        email: true,
+        roles: {
+          select: {
+            role: {
+              select: {
+                role_name: true,
+              },
+            },
+          },
+        },
+      },
+    })
+    .then((user) => ({
+      name: user.name,
+      email: user.email,
+      roles: user.roles.map((userRole) => ({
+        role_name: userRole.role.role_name,
+      })),
+    }));
 };
 
 export const findOne = async (id: string) => {

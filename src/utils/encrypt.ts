@@ -1,5 +1,7 @@
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 export const encryptPass = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
   return bcrypt.hash(password, salt);

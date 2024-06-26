@@ -1,8 +1,12 @@
+import { IRoles } from "./roleDTO";
+import { TeamDTO } from "./teamDTO";
+
 export interface UserDTO {
   id: string;
   name: string;
   email: string;
-  password: string;
+  roles: IRoles[];
+  teams: TeamDTO[];
 }
 
 export interface UserCreateDTO {
