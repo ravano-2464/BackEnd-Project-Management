@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import UnauthorizeError from "../errors/UnauthorizeError";
 import { IRoles } from "../dtos/roleDTO";
+import ForbiddenError from "../errors/ForbiddenError";
 
 export const authentication = (
   req: Request,
@@ -17,7 +18,7 @@ export const authentication = (
 
     jwt.verify(token, process.env.JWT_SECRET as string, async (err, user) => {
       if (err) {
-        throw new UnauthorizeError("Invalid token");
+        throw new ForbiddenError("Invalid token");
       }
 
       const { id, roles } = user as { id: string; roles: IRoles[] };

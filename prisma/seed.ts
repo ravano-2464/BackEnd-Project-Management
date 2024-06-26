@@ -1,5 +1,5 @@
 import { prisma } from "../src/db";
-import seedDatabase from "./seeeders";
+import seedDatabase from "./seeders";
 
 const main = async () => {
   await seedDatabase();

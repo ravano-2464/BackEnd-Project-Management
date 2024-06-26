@@ -23,7 +23,7 @@ export const findAll = async () => {
           select: {
             team: {
               select: {
-                name: true,
+                team_name: true,
               },
             },
           },
@@ -42,7 +42,7 @@ export const findAll = async () => {
           role_name: userRole.role.role_name,
         })),
         teams: user.TeamMembers.map((userTeam) => ({
-          team_name: userTeam.team.name,
+          team_name: userTeam.team.team_name,
         })),
       }))
     );
@@ -122,7 +122,7 @@ export const findOne = async (id: string) => {
           select: {
             team: {
               select: {
-                name: true,
+                team_name: true,
               },
             },
           },
@@ -137,7 +137,7 @@ export const findOne = async (id: string) => {
         role_name: userRole.role.role_name,
       })),
       teams: user?.TeamMembers.map((userTeam) => ({
-        team_name: userTeam.team.name,
+        team_name: userTeam.team.team_name,
       })),
     }));
 };
@@ -207,7 +207,7 @@ export const update = async (id: string, payload: UserUpdateDTO) => {
           select: {
             team: {
               select: {
-                name: true,
+                team_name: true,
               },
             },
           },
@@ -222,7 +222,7 @@ export const update = async (id: string, payload: UserUpdateDTO) => {
         role_name: userRole.role.role_name,
       })),
       teams: user?.TeamMembers.map((userTeam) => ({
-        team_name: userTeam.team.name,
+        team_name: userTeam.team.team_name,
       })),
     }));
 };
