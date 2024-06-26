@@ -48,9 +48,53 @@ export const login = async (payload: IAuth) => {
 };
 
 export const me = async (id: string) => {
-  return await prisma.user.findUnique({
+  const isExist = await prisma.user.findUnique({
     where: {
       id,
     },
   });
+
+  if (!isExist) {
+    throw new ValidationError("User not found");
+  }
+  return await prisma.user
+    .findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        roles: {
+          select: {
+            role: {
+              select: {
+                role_name: true,
+              },
+            },
+          },
+        },
+        TeamMembers: {
+          select: {
+            team: {
+              select: {
+                team_name: true,
+              },
+            },
+          },
+        },
+      },
+    })
+    .then((user) => ({
+      id: user?.id,
+      name: user?.name,
+      email: user?.email,
+      roles: user?.roles.map((userRole) => ({
+        role_name: userRole.role.role_name,
+      })),
+      teams: user?.TeamMembers.map((userTeam) => ({
+        team_name: userTeam.team.team_name,
+      })),
+    }));
 };
